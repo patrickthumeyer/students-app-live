@@ -1,19 +1,15 @@
 const express = require("express");
 const router = express.Router();
-
-let students = [
-  {
-    name: "Rupert",
-    lastname: "Jalili",
-    age: 30,
-    class: "FBW101",
-    location: "BER"
-  }
-];
+const fs = require("fs");
+const path = require("path");
+const myPath = path.join(__dirname, "../data/students.json");
 
 // - GET (all, individual)
 router.get("/", (req, res) => {
-  res.status(200).json(students);
+  fs.readFile(myPath, "utf-8", (err, data) => {
+    if (err) throw err;
+    res.status(200).json(students);
+  });
 });
 
 router.get("/:name", (req, res) => {
@@ -31,7 +27,7 @@ router.get("/:name", (req, res) => {
 // - PUT (individual)
 router.put("/:name", (req, res) => {
   if (req.params.name && req.body) {
-    students = students.map((student) => {
+    students = students.map(student => {
       if (student.name.toLowerCase() === req.params.name.toLowerCase()) {
         Object.assign(student, req.body);
       }
